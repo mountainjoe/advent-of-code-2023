@@ -3,6 +3,8 @@ use std::io::{BufRead,BufReader};
 
 use clap::Parser;
 
+use regex::Regex;
+
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -21,32 +23,56 @@ fn main() {
     let file = file.unwrap();
     let reader = BufReader::new(file);
 
+    let re = Regex::new(r"0|1|2|3|4|5|6|7|8|9").unwrap();
+
     let mut sum = 0;
     for line in reader.lines() {
         let line = line.unwrap();
         println!("input_line: {}", line);
-        let twochars = line_to_two_chars(&line);
-        println!("twochars: {:?}", twochars);
-        let num = two_chars_to_number(&twochars);
-        println!("value: {:?}", num);
-        sum += num;
+        
+        let strings = process_line(&re, &line);
+        println!("  ({:?},{:?})", strings.0, strings.1);
+
+        sum += tuple_to_value(&strings)
     }
 
     println!("sum: {}", sum);
 }
 
-// convert a text line into the two characters of interest
-fn line_to_two_chars(line: &str) -> (char, char) {
-    let s_index = line.find(|c: char| c.is_ascii_digit()).unwrap(); // panic if not found; presume good input
-    let e_index = line.rfind(|c: char| c.is_ascii_digit()).unwrap();
+fn process_line<'a>(re: &Regex, haystack: &'a str) -> (&'a str,&'a str) { // TODO return Result<> from everything
 
-    (
-        char::from_u32(line.as_bytes()[s_index] as u32).unwrap(),
-        char::from_u32(line.as_bytes()[e_index] as u32).unwrap()
-    )
+    let mut matches = re.find_iter(haystack).peekable();
+    // so I've got the digit matches, right?
+
+    // first number, we want the first entry in the iterator
+    let first = matches.next().unwrap().as_str();
+    let mut last = first;
+
+    // this could be improved, but would have to progressively generate haystacks from the back end
+    // now we need the last entry
+    while let Some(m) = matches.next() {
+        last = m.as_str();
+    }
+
+    (first, last)
 }
 
-// take two characters and turn them into the desired number (concatenate)
-fn two_chars_to_number(two_chars: &(char,char)) -> u32 {
-    10 * two_chars.0.to_digit(10).unwrap() + two_chars.1.to_digit(10).unwrap()
+fn tuple_to_value(t: &(&str,&str)) -> u32 {
+    10 * str_to_num(t.0) + str_to_num(t.1)
+}
+
+fn str_to_num(numstr: &str) -> u32 {
+    match numstr {
+        "0" => 0,
+        "1" => 1,
+        "2" => 2,
+        "3" => 3,
+        "4" => 4,
+        "5" => 5,
+        "6" => 6,
+        "7" => 7,
+        "8" => 8,
+        "9" => 9,
+        _ => panic!("illegal input")
+    }
 }
