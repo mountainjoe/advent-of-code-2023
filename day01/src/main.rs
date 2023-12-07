@@ -33,42 +33,42 @@ should be 38
  */
 
     // thought I cleverly added everything I needed
-    let re = Regex::new(r"0|1|one|2|two|3|three|4|four|5|five|6|six|7|seven|8|eight|9|nine").unwrap();
 
-    //let re = Regex::new(r"0|1|2|3|4|5|6|7|8|9").unwrap();
+    // idea for possibly more efficient strategy!
+    // try searching from left, find a match, and then search for matches in substrings of that match...
+    // which should traverse the string via regex reasonably efficiently (not as good as straight iterator,
+    // but that didn't work)
+
+    let regex_string = r"0|1|one|2|two|3|three|4|four|5|five|6|six|7|seven|8|eight|9|nine";
+    let re_norm = Regex::new(regex_string).unwrap();
+    let regex_string = regex_string.chars().rev().collect::<String>();
+    let re_rev = Regex::new(&regex_string).unwrap();
 
     let mut sum = 0;
     for line in reader.lines() {
         let line = line.unwrap();
         println!("input_line: {}", line);
         
-        let strings = process_line(&re, &line);
-        println!("  ({:?},{:?})", strings.0, strings.1);
-
-        let value = tuple_to_value(&strings);
+        let value = process_line(&re_norm, &re_rev, &line);
         println!("  {}", value);
         sum += value;
     }
 
-    println!("sum: {}", sum);
+    println!("sum: {}", sum); // day 1 part 2: 53539 is correct answer
 }
 
-fn process_line<'a>(re: &Regex, haystack: &'a str) -> (&'a str,&'a str) { // TODO return Result<> from everything
+fn process_line<'a>(re_norm: &Regex, re_rev: &Regex, haystack: &'a str) -> u32 { // TODO return Result<> from everything
 
-    let mut matches = re.find_iter(haystack);
     // so I've got the digit matches, right?
 
     // first number, we want the first entry in the iterator
-    let first = matches.next().unwrap().as_str();
-    let mut last = first;
+    let first = re_norm.find(haystack).unwrap().as_str();
+    let haystack = haystack.chars().rev().collect::<String>();
+    let last = re_rev.find(&haystack).unwrap().as_str().chars().rev().collect::<String>();
 
-    // this could be improved, but would have to progressively generate haystacks from the back end
-    // now we need the last entry
-    while let Some(m) = matches.next() {
-        last = m.as_str();
-    }
 
-    (first, last)
+    println!("  {}, {}", first, last);
+    tuple_to_value(&(first, &last))
 }
 
 fn tuple_to_value(t: &(&str,&str)) -> u32 {
