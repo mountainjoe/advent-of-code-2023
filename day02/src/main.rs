@@ -18,7 +18,7 @@ pub struct MarblesParser;
 #[derive(Debug)]
 struct Game {
     num: u32,
-    pulls: Vec<Round>,
+    rounds: Vec<Round>,
 }
 
 #[derive(Debug)]
@@ -78,19 +78,37 @@ fn main() {
     let games = reader.lines().map(|res| parse_game(&res.unwrap()).unwrap()).collect::<Vec<_>>();
     //eprintln!("{:?}", games);
 
-    let sum: u32 = games.iter().filter(|g| is_legal_game(&g)).map(|g| g.num).sum();
+    // this is the first part of day02
+    //let sum: u32 = games.iter().filter(|g| is_legal_game(&g)).map(|g| g.num).sum();
 
-    println!("sum: {}", sum);
+    let power_sum: u32 = games.iter().map(|g| game_power(&g)).sum();
+
+    println!("power sum: {}", power_sum);
 }
 
-fn is_legal_game(game: &Game) -> bool {
+fn game_power(game: &Game) -> u32 {
+    let max_round = game.rounds.iter().fold(Round::new(), |acc, r| {
+        Round {
+            red: std::cmp::max(acc.red, r.red),
+            green: std::cmp::max(acc.green, r.green),
+            blue: std::cmp::max(acc.blue, r.blue)
+        }
+    });
+
+    let power_sum = max_round.red * max_round.green * max_round.blue;
+    //eprintln!("Game {} Max Round = {:?} Power = {}", game.num, max_round, power_sum);
+
+    power_sum    
+}
+
+fn _is_legal_game(game: &Game) -> bool {
     let limit_round = Round {
         red: 12,
         green: 13,
         blue: 14
     };
 
-    game.pulls.iter().all(|r| {
+    game.rounds.iter().all(|r| {
         r.red <= limit_round.red &&
         r.green <= limit_round.green &&
         r.blue <= limit_round.blue
@@ -112,7 +130,7 @@ fn parse_game(line: &str) -> Result<Game,String> {
 
             Ok(Game {
                 num: n,
-                pulls: v
+                rounds: v
             })
         },
         Err(error) => {
