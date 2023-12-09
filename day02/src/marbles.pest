@@ -1,0 +1,22 @@
+game = { 
+
+"Game " ~ number ~ ": "
+~ round 
+~ (semi ~ round)*
+~ NEWLINE?
+}
+
+round = {
+  marbpull ~
+  (comma ~ marbpull)*
+}
+
+marbpull = { number ~ w ~ marb }
+number = { ASCII_DIGIT+ }
+marb = { red | green | blue }
+blue = { "blue" }
+green = { "green" }
+red = { "red" }
+comma = _{ ", " }
+semi = _{ "; "}
+w = _{ " " }
