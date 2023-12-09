@@ -75,11 +75,26 @@ fn main() {
     let file = file.unwrap();
     let reader = BufReader::new(file);
 
-    for line in reader.lines() {
-        if let Ok(g) = parse_game(&line.unwrap()) {
-            println!("{:?}", g);
-        }
-    }
+    let games = reader.lines().map(|res| parse_game(&res.unwrap()).unwrap()).collect::<Vec<_>>();
+    //eprintln!("{:?}", games);
+
+    let sum: u32 = games.iter().filter(|g| is_legal_game(&g)).map(|g| g.num).sum();
+
+    println!("sum: {}", sum);
+}
+
+fn is_legal_game(game: &Game) -> bool {
+    let limit_round = Round {
+        red: 12,
+        green: 13,
+        blue: 14
+    };
+
+    game.pulls.iter().all(|r| {
+        r.red <= limit_round.red &&
+        r.green <= limit_round.green &&
+        r.blue <= limit_round.blue
+    })
 }
 
 fn parse_game(line: &str) -> Result<Game,String> {
