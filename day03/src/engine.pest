@@ -1,0 +1,12 @@
+engine = _{
+  (line ~ NEWLINE)+ 
+  ~ line
+}
+
+line = _{
+ (number | sym | dot)+
+}
+
+number = { ASCII_DIGIT+ }
+sym = { '!'..'-' | "/" | ':'..'@' | '['..'`' | '{'..'~' }
+dot = _{ "." }
