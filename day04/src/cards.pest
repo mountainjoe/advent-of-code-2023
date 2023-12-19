@@ -1,0 +1,13 @@
+cards = _{
+	card ~
+    (NEWLINE ~ card)*
+}
+
+card = {
+    "Card" ~ w ~ number ~ colon ~ (w* ~ number ~ w*)+ ~ bar ~ (w* ~ number ~ w*)+
+}
+
+number =  { ASCII_DIGIT+ }
+w      = _{ " "+ }
+bar    =  { "|" }
+colon  =  { ": " }
