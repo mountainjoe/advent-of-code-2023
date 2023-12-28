@@ -1,0 +1,62 @@
+Garden = _{
+ Seeds ~ 
+ SeedSoilMap ~
+ SoilFertilizerMap ~
+ FertilizerWaterMap ~
+ WaterLightMap ~
+ LightTemperatureMap ~
+ TemperatureHumidityMap ~
+ HumidityLocationMap
+}
+
+Seeds = {
+ "seeds: " ~
+ (Number ~ w?)+ ~
+ NEWLINE ~ NEWLINE
+}
+
+SeedSoilMap = {
+ "seed-to-soil map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+SoilFertilizerMap = {
+ "soil-to-fertilizer map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+FertilizerWaterMap = {
+ "fertilizer-to-water map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+WaterLightMap = {
+ "water-to-light map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+LightTemperatureMap = {
+ "light-to-temperature map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+TemperatureHumidityMap = {
+ "temperature-to-humidity map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+HumidityLocationMap = {
+ "humidity-to-location map:" ~ NEWLINE ~
+ TripleNumber+ ~
+ NEWLINE
+}
+
+TripleNumber = { Number ~ w ~ Number ~ w ~ Number ~ NEWLINE }
+Number =  { ASCII_DIGIT+ }
+w      = _{ " "+ }
