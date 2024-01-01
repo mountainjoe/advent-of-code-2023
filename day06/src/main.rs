@@ -55,7 +55,10 @@ fn main() {
     // x^2 - tx - d == 0 --> search around the solution to this quadratic equation?
 
     let product: usize = result.iter().product();
-    eprintln!("final result: {}", product); // day06part1 = 220320, brute force 228ms
+    // day06part1 = 220320, brute force 228ms
+    // day06part2 = 34454850, brute force 2.477s
+    eprintln!("final result: {}", product); 
+
 }
 
 fn race_distance(push_time: u64, total_time: u64) -> u64 {
