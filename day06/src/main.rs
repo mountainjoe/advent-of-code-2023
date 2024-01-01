@@ -16,20 +16,15 @@ struct Args {
 #[derive(Debug, Clone, Copy)]
 struct RaceParam {
     time: u32,
-    distance: u32
+    distance: u64
 }
 
-const EXAMPLE_RACE_PARAMS: [RaceParam; 3] = [
-    RaceParam{ time: 7, distance: 9},
-    RaceParam{ time: 15, distance: 40},
-    RaceParam { time: 30, distance: 200},
+const EXAMPLE_RACE_PARAMS: [RaceParam; 1] = [
+    RaceParam{ time: 71530, distance: 940200},
 ];
 
-const INPUT_RACE_PARAMS: [RaceParam; 4] = [
-    RaceParam { time: 59, distance: 597 },
-    RaceParam { time: 79, distance: 1234 },
-    RaceParam { time: 65, distance: 1032 },
-    RaceParam { time: 75, distance: 1328 },
+const INPUT_RACE_PARAMS: [RaceParam; 1] = [
+    RaceParam { time: 59796575, distance: 597123410321328 },
 ];
 
 fn main() {
@@ -44,7 +39,7 @@ fn main() {
 
     let result: Vec<_> = input.iter().enumerate().map(|(_i,race)| {
         (0..(1+race.time)).map(|push_time| {
-            race_distance(push_time, race.time) > race.distance
+            race_distance(push_time.into(), race.time.into()) > race.distance
         }).filter(|b| *b).count()
     }).collect();
 
@@ -63,7 +58,7 @@ fn main() {
     eprintln!("final result: {}", product); // day06part1 = 220320, brute force 228ms
 }
 
-fn race_distance(push_time: u32, total_time: u32) -> u32 {
+fn race_distance(push_time: u64, total_time: u64) -> u64 {
     assert!(push_time <= total_time);
 
     push_time * (total_time - push_time)
