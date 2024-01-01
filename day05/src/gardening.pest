@@ -11,8 +11,12 @@ Garden = _{
 
 Seeds = {
  "seeds: " ~
- (Number ~ w?)+ ~
+ (SeedRange ~ w?)+ ~
  NEWLINE ~ NEWLINE
+}
+
+SeedRange = {
+ (Number ~ w ~ Number)
 }
 
 SeedSoilMap = {
