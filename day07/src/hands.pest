@@ -1,0 +1,5 @@
+Hands = _{ Hand+ }
+Hand = { Card{5} ~ " " ~ Number ~ NEWLINE }
+
+Number = { ASCII_DIGIT+ }
+Card = { '2'..'9' | "T" | "J" | "Q" | "K" | "A" }
